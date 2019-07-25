@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>🦄SofaToken&Micropayment</title>
+    <style>
+        body{
+            background-color: rgba(202, 202, 202, 0.24);
+        }
+        button{
+            color: #494949 !important;
+            text-transform: uppercase;
+            background: #ffffff;
+            border: 1px solid #494949 !important;
+            display: inline-block;
+            border-radius: 6px;
+        }
+        .contract-box{
+            text-align: center;
+            border-style:groove;
+            background-color: bisque;
+        }
+        .token-contract{
+            background-color:pink;
+            text-align: center;
+        }
+        .flex-container {
+            display: flex;
+            margin-top:10px;
+        }
+        .sender{
+            width: 50%;
+            border-style: solid;
+            background-color: rgba(252, 14, 14, 0.336);
+        }
+        .receiver{
+            width:50%;
+            border-style: solid;
+            background-color: rgba(5, 217, 255, 0.473);
+        }
+        .signbox{
+            border-style: dotted;
+            background-color:mediumaquamarine;                                                             
+            text-align: center;
+        }
+        .receiver{
+            margin-left: 10px;
+        }
+        .check-list{
+            columns: 4;
+            -webkit-columns: 4;
+            -moz-columns: 4;
+        }
+        .cancelbox{
+            margin: 10px;
+        }
+        .navigator{
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color:gray;
+        }
+        .navigator li {
+        float: left;
+        }
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        li a:hover {
+            background-color:powderblue
+        }
+        .active {
+            background-color: #111;
+        }
+        
+        .token-transfer{
+            text-align: center;
+            margin:0px;
+        }
+        .transfer_box{
+            border-style:dotted;
+            text-align: center;
+            margin: 10px;
+            padding: 10px;
+        }
+        .token_contract{
+            text-align: center;
+            width: 50%;
+            background-color:thistle;
+        }
+        .crowdsale-contract{
+            text-align: center;
+            width: 50%;
+            background-color: bisque
+        }
+    </style>
+</head>
+<body>
+    <ul class="navigator">
+        <li style="background-color:deepskyblue;"><a onclick="App.refresh()">↺</a></li>
+        <li><a class="active" id="token_sale_nav">TokenSale</a></li>
+        <li><a id="micropayment_nav">Micropayment</a></li>
+        <p style="position: absolute;right:20px;color:turquoise">current account: <span id="current_account"></span></p>
+    </ul>
+    <div id="tokensale_page" style="display: flex">
+        <div class="token-contract">
+            <h3 style="text-align: center;color:darkblue">SofaToken ( SOFA )</h3>
+            <div style="text-align: center">
+                <p>contract address:</p>
+                <p><span id="sofa_token_contract_address"></span></p>
+                total supply: <span id="total_supply"></span> 
+            </div>
+            <div class="token-transfer" id="token_transfer">
+                <br>
+                <span>address: </span><input style="width:40%" type="text" id="sofa_token_account">
+                <button id="query_sofa">track balance</button>
+                <li style="display: none;border-style: solid;margin-top: 1px;width: 90%" id="template0"></li>
+                <ul id="sofa_accounts_list" style="list-style-type:none;text-align: center">
+                </ul>
+            </div>
+            <div class="transfer_box">
+                <!-- current account: <span id="current_account"></span> -->
+                <div>
+                    transfer: <input type="number" id="transfer_amount">SOFA to <input type="text" style="width:30%" name="" id="sofa_receiver">
+                    <button id="sofa_transfer">send</button>
+                </div>
+            </div>
+        </div>
+        <div class="crowdsale-contract">
+            <div style="border:2px dotted;padding: 5px">
+                    <h3 id="crowdtitle">SOFA CrowdSale</h3>
+                <div style="text-align: center">
+                    <p>contract address:</p>
+                    <p><span id="crowdsale-contract-address"></span></p>    
+                    contract balance: <span id="crowdsale-contract-balance"></span> 
+                    <br>
+                    token sold: <span id="token_sold"></span>
+                    <button style="margin-left: 20px;" id="open_sale">open sale</button>
+                </div>
+                <div style="text-align:center">
+                    Token Price: <input type="number" name="" id="token_price">Wei
+                    <button id="set_token_price">reset</button>
+                    <p id="equal_ether" style="display: none;margin:0px"></p>
+                </div>
+            </div>
+                <div style="text-align: left;margin-top:10px">
+                     I want buy <input type="number" style="width:60%" id="buy_amount" value="0"> SOFA 
+                     which costs <span style="margin: 0px" id="ether_cost">0 Wei</span>
+                     <button id="buy_token">buy it👍</button>
+                </div>
+        </div>
+    </div>  
+    <div class="content" id="micropayment_page" style="display:none">
+        <div class="contract-box">
+            <h3 style="text-align: center;color:darkgray">PayToCheck contract</h1>
+            <p id="contract_address">contract address:</p>
+            <p id="contract_balance">balance</p>
+            <div style="text-align: center"><span style="color:springgreen">⬤</span> valid 
+                <span style="color: gray">⬤</span> checked 
+                <!-- <span style="color: red">⬤</span> canceled  -->
+            </div>
+            <div id="template1" style="display:none"><span>⬤</span></div>
+            <ul id="checklist" class="check-list">
+            </ul>
+        </div>
+        <div class = "flex-container">
+            <div class="sender">
+                <h3 style="text-align: center;color: crimson">Sender</h3>
+                <p id="sender_address">address:</p>
+                <p id="sender_balance">balance:</p>
+                deposite: &nbsp;<input type="number" id="deposite_value">SOFA
+                <button id="deposite">send</button> 
+                <br>
+                <div class="signbox" style="margin:10px">
+                    send to:<input type="text" style="width: 80%" name="" id="send_to">
+                    <br>
+                    nonce: <input type="text" style="width: 80%" name="" id="nonce">
+                    <br>
+                    value: <input type="number" style="width: 40%" name="" id="send_value">SOFA
+                    <br>
+                    <div style="text-align: center">
+                        <button onclick="App.createCheck()">create check</button>
+                    </div>
+                <!-- </div class="cancelbox">
+                    cancel: <input type="number" id="nonce_to_cancel">
+                    <button onclick="App.cancelCheck()">cancel check</button>
+                <div> -->
+                    
+                </div>
+            </div>
+            <div class="receiver">
+                <h3 style="text-align: center;color:blue">Receiver</h3>
+                receiver address: <input type="text" style="width:50%" id="receiver_address">
+                <button onclick="App.setAccount()">set</button>
+                <p id="receiver_balance">balance:</p>
+                <div id = "template2" style="display:none"><button>claim</button></div>
+                <ul id="receiver_check_list">
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="vendor/truffle-contract/dist/truffle-contract.js"></script>
+    <script src="app.js"></script>
+    <script src="web3.min.js"></script>
+    <script>
+        $("#token_sale_nav").click(function(){
+            $("#tokensale_page").show()
+            $("#micropayment_page").hide()
+            $("#token_sale_nav").attr('class','active')
+            $("#micropayment_nav").attr('class',"")
+        })
+        $("#micropayment_nav").click(function(){
+            $("#tokensale_page").hide()
+            $("#micropayment_page").show()
+            $("#token_sale_nav").attr('class','')
+            $("#micropayment_nav").attr('class',"active")
+        })
+    </script>
+</body>
+</html>
